@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cute Birthday Countdown</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Baloo+2:wght@400;600;800&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Baloo 2", cursive;
+        background-color: #ffeef8;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+        color: #ff6eb5;
+      }
+
+      /* Cute background elements */
+      .bg-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      .cute-shape {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.7;
+        z-index: -1;
+      }
+
+      .cloud {
+        position: absolute;
+        background-color: white;
+        border-radius: 50px;
+        box-shadow: 0 8px 5px rgba(0, 0, 0, 0.1);
+        opacity: 0.9;
+        z-index: -2;
+        animation: float 20s linear infinite;
+      }
+
+      .cloud:before,
+      .cloud:after {
+        content: "";
+        position: absolute;
+        background-color: white;
+        border-radius: 50%;
+      }
+
+      /* Main container */
+      .birthday-container {
+        text-align: center;
+        width: 90%;
+        max-width: 600px;
+        position: relative;
+        z-index: 2;
+      }
+
+      /* Cute card design */
+      .birthday-card {
+        background-color: white;
+        border-radius: 30px;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 10px 25px rgba(255, 110, 181, 0.2);
+        position: relative;
+        overflow: hidden;
+        border: 4px solid #ffcce9;
+      }
+
+      /* Balloons decorations */
+      .balloon {
+        position: absolute;
+        width: 40px;
+        height: 50px;
+        background-color: #ff96ca;
+        border-radius: 50%;
+        animation: floatBalloon 6s ease-in-out infinite;
+      }
+
+      .balloon:before {
+        content: "";
+        position: absolute;
+        width: 6px;
+        height: 50px;
+        background-color: #ff96ca;
+        bottom: -45px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 3px;
+      }
+
+      /* Title styles */
+      .birthday-title {
+        font-family: "Bubblegum Sans", cursive;
+        font-size: 2.8rem;
+        color: #ff6eb5;
+        margin-bottom: 1.2rem;
+        text-shadow: 3px 3px 0 #ffcce9;
+        letter-spacing: 1px;
+        position: relative;
+        display: inline-block;
+        z-index: 3;
+      }
+
+      .birthday-subtitle {
+        font-size: 1.5rem;
+        color: #99c1ff;
+        margin-bottom: 2.5rem;
+        font-weight: 600;
+      }
+
+      /* Countdown container */
+      .countdown-wrapper {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 2.5rem;
+      }
+
+      /* Cute countdown boxes */
+      .countdown-box {
+        background-color: #fff4fa;
+        border-radius: 20px;
+        border: 3px solid #ffb3dd;
+        width: 80px;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 6px 0 #ffb3dd;
+        position: relative;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .countdown-box.pulse {
+        animation: pulseBox 0.6s;
+      }
+
+      .countdown-number {
+        font-family: "Bubblegum Sans", cursive;
+        font-size: 2.5rem;
+        color: #ff6eb5;
+        line-height: 1;
+        margin-bottom: 5px;
+      }
+
+      .countdown-label {
+        font-size: 0.9rem;
+        color: #99c1ff;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* Surprise button */
+      #surprise-button {
+        display: none;
+        background-color: #ff6eb5;
+        color: white;
+        font-family: "Bubblegum Sans", cursive;
+        font-size: 1.4rem;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 8px 0 #ff369b;
+        transition: all 0.2s;
+        position: relative;
+        margin: 1rem auto;
+        animation: bounceButton 0.6s;
+      }
+
+      #surprise-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 13px 0 #ff369b;
+      }
+
+      #surprise-button:active {
+        transform: translateY(3px);
+        box-shadow: 0 5px 0 #ff369b;
+      }
+
+      #surprise-button i {
+        margin-right: 10px;
+      }
+
+      /* Celebration effects */
+      .celebration {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      /* Cute animations */
+      @keyframes floatBalloon {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      @keyframes pulseBox {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes bounceButton {
+        0% {
+          transform: scale(0.1);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateX(100vw);
+        }
+        100% {
+          transform: translateX(-100px);
+        }
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.4;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Character container */
+      .character-container {
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 120px;
+        z-index: 4;
+      }
+
+      .character {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+
+      .character-body {
+        width: 100px;
+        height: 100px;
+        background-color: #fff3ba;
+        border-radius: 50%;
+        position: absolute;
+        bottom: 0;
+        left: 10px;
+        animation: bounce 2s infinite;
+        overflow: visible;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .character-face {
+        position: absolute;
+        width: 80px;
+        height: 40px;
+        top: 30px;
+        left: 10px;
+      }
+
+      .character-eye {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        background-color: #333;
+        border-radius: 50%;
+        top: 10px;
+      }
+
+      .character-eye.left {
+        left: 20px;
+      }
+
+      .character-eye.right {
+        right: 20px;
+      }
+
+      .character-mouth {
+        position: absolute;
+        width: 30px;
+        height: 10px;
+        background-color: #ff9ecd;
+        border-radius: 0 0 20px 20px;
+        bottom: 0;
+        left: 25px;
+      }
+
+      .character-blush {
+        position: absolute;
+        width: 15px;
+        height: 7px;
+        background-color: #ffb5db;
+        border-radius: 50%;
+        top: 20px;
+        opacity: 0.6;
+      }
+
+      .character-blush.left {
+        left: 10px;
+      }
+
+      .character-blush.right {
+        right: 10px;
+      }
+
+      .character-ear {
+        position: absolute;
+        width: 30px;
+        height: 40px;
+        background-color: #fff3ba;
+        border-radius: 50%;
+        top: -20px;
+      }
+
+      .character-ear.left {
+        left: 10px;
+        transform: rotate(-20deg);
+      }
+
+      .character-ear.right {
+        right: 10px;
+        transform: rotate(20deg);
+      }
+
+      .character-ear-inner {
+        position: absolute;
+        width: 15px;
+        height: 20px;
+        background-color: #ffdbac;
+        border-radius: 50%;
+        top: 10px;
+        left: 7px;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      /* Happy birthday message */
+      .birthday-message {
+        display: none;
+        font-family: "Bubblegum Sans", cursive;
+        font-size: 3rem;
+        color: #ff369b;
+        margin-bottom: 1.5rem;
+        text-shadow: 3px 3px 0 #ffcce9;
+        animation: scaleUp 0.5s;
+      }
+
+      @keyframes scaleUp {
+        0% {
+          transform: scale(0);
+        }
+        70% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Custom section that appears after countdown */
+      #birthday-surprise {
+        display: none;
+        padding: 2rem;
+        background-color: #fff4fa;
+        border-radius: 30px;
+        border: 4px solid #ffcce9;
+        box-shadow: 0 10px 25px rgba(255, 110, 181, 0.2);
+        margin-top: 2rem;
+        animation: fadeIn 1s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .next-link {
+        text-decoration: none;
+        color: #ff6eb5;
+        font-size: 1.2rem;
+      }
+
+      /* Responsive design */
+      @media (max-width: 600px) {
+        .birthday-title {
+          font-size: 2.2rem;
+        }
+
+        .birthday-subtitle {
+          font-size: 1.2rem;
+        }
+
+        .countdown-wrapper {
+          gap: 10px;
+        }
+
+        .countdown-box {
+          width: 65px;
+          height: 80px;
+        }
+
+        .countdown-number {
+          font-size: 2rem;
+        }
+
+        .countdown-label {
+          font-size: 0.7rem;
+        }
+
+        .character-container {
+          transform: scale(0.8) translateX(-60%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Cute background elements -->
+    <div class="bg-elements" id="bg-elements"></div>
+
+    <!-- Main container -->
+    <div class="birthday-container">
+      <div class="birthday-card">
+        <h1 class="birthday-title">Countdown to Madam-Jiii's Birthday</h1>
+        <h2 class="birthday-subtitle" id="name-display">For Someone Special</h2>
+
+        <!-- Countdown display -->
+        <div class="countdown-wrapper">
+          <div class="countdown-box" id="days-box">
+            <div class="countdown-number" id="days">00</div>
+            <div class="countdown-label">Days</div>
+          </div>
+          <div class="countdown-box" id="hours-box">
+            <div class="countdown-number" id="hours">00</div>
+            <div class="countdown-label">Hours</div>
+          </div>
+          <div class="countdown-box" id="minutes-box">
+            <div class="countdown-number" id="minutes">00</div>
+            <div class="countdown-label">Minutes</div>
+          </div>
+          <div class="countdown-box" id="seconds-box">
+            <div class="countdown-number" id="seconds">00</div>
+            <div class="countdown-label">Seconds</div>
+          </div>
+        </div>
+
+        <!-- Birthday message (shows after countdown) -->
+        <div class="birthday-message" id="birthday-message">
+          Happy Birthday! 🎂
+        </div>
+
+        <!-- Surprise button -->
+        <button id="surprise-button">
+          <i class="fas fa-gift"></i>See Your Surprise!
+        </button>
+
+        <!-- Cute character decoration -->
+        <div class="character-container">
+          <div class="character">
+            <div class="character-body">
+              <div class="character-ear left">
+                <div class="character-ear-inner"></div>
+              </div>
+              <div class="character-ear right">
+                <div class="character-ear-inner"></div>
+              </div>
+              <div class="character-face">
+                <div class="character-eye left"></div>
+                <div class="character-eye right"></div>
+                <div class="character-blush left"></div>
+                <div class="character-blush right"></div>
+                <div class="character-mouth"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section that appears after clicking the button -->
+      <div id="birthday-surprise">
+        <h2
+          style="
+            color: #ff6eb5;
+            font-family: 'Bubblegum Sans', cursive;
+            margin-bottom: 1rem;
+          "
+        >
+          Your Birthday Surprise!
+        </h2>
+        <p style="color: #777; margin-bottom: 1rem">
+          Happy Birthday, my dearest! 🎂🎉 <br />
+          On this special day, I just want to remind you how truly amazing you
+          are. <br />
+          Your smile lights up my world, your laughter is my favorite melody,
+          and your love is the greatest gift I could ever receive. <br>
+          I’m so grateful to share this journey with you, and I can't wait to create
+          even more beautiful memories together.
+        </p>
+        <div style="margin-top: 1.5rem">
+          <p style="color: #ff96ca; font-size: 1.2rem">
+            🎉 May your day be filled with joy, laughter, and beautiful
+            memories! 🎉
+          </p>
+        </div>
+        <a class="next-link" href="../index.html">Click here to see more</a>
+      </div>
+    </div>
+
+    <!-- Celebration elements container -->
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const birthdayPersonName = "Someone Truly Special";
+        const birthdayDate = new Date(2025, 4, 21, 0, 0, 0); // Year, Month (0-11), Day, Hour, Minute
+
+        // const birthdayDate = new Date(new Date().getTime() + 10000);
+
+        const nameDisplay = document.getElementById("name-display");
+        const daysEl = document.getElementById("days");
+        const hoursEl = document.getElementById("hours");
+        const minutesEl = document.getElementById("minutes");
+        const secondsEl = document.getElementById("seconds");
+        const daysBoxEl = document.getElementById("days-box");
+        const hoursBoxEl = document.getElementById("hours-box");
+        const minutesBoxEl = document.getElementById("minutes-box");
+        const secondsBoxEl = document.getElementById("seconds-box");
+        const surpriseButton = document.getElementById("surprise-button");
+        const bgElements = document.getElementById("bg-elements");
+        const celebrationEl = document.getElementById("celebration");
+        const birthdayMessage = document.getElementById("birthday-message");
+        const birthdaySurprise = document.getElementById("birthday-surprise");
+
+        nameDisplay.textContent = `For ${birthdayPersonName}`;
+
+        // ===== CUTE BACKGROUND ELEMENTS =====
+        function createCuteBackground() {
+          // Create cute shapes
+          const shapes = ["circle", "heart", "star"];
+          const colors = [
+            "#ffcce9",
+            "#ffc8dd",
+            "#c8e7ff",
+            "#c8ffe7",
+            "#fff3c8",
+          ];
+
+          for (let i = 0; i < 25; i++) {
+            const shape = document.createElement("div");
+            shape.classList.add("cute-shape");
+
+            // Random properties
+            const size = Math.random() * 20 + 10;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+
+            shape.style.width = `${size}px`;
+            shape.style.height = `${size}px`;
+            shape.style.backgroundColor = color;
+            shape.style.left = `${Math.random() * 100}%`;
+            shape.style.top = `${Math.random() * 100}%`;
+            shape.style.animation = `twinkle ${
+              Math.random() * 3 + 2
+            }s ease-in-out infinite`;
+            shape.style.animationDelay = `${Math.random() * 5}s`;
+
+            bgElements.appendChild(shape);
+          }
+
+          // Create clouds
+          for (let i = 0; i < 5; i++) {
+            const cloud = document.createElement("div");
+            cloud.classList.add("cloud");
+
+            const width = Math.random() * 100 + 100;
+            const height = width * 0.6;
+
+            cloud.style.width = `${width}px`;
+            cloud.style.height = `${height}px`;
+            cloud.style.top = `${Math.random() * 80}%`;
+            cloud.style.animationDuration = `${Math.random() * 60 + 60}s`;
+            cloud.style.animationDelay = `${Math.random() * 10}s`;
+
+            // Create cloud puffs
+            const beforeElem = document.createElement("div");
+            beforeElem.style.position = "absolute";
+            beforeElem.style.backgroundColor = "white";
+            beforeElem.style.borderRadius = "50%";
+            beforeElem.style.width = `${width * 0.5}px`;
+            beforeElem.style.height = `${width * 0.5}px`;
+            beforeElem.style.top = "-25%";
+            beforeElem.style.left = "25%";
+
+            const afterElem = document.createElement("div");
+            afterElem.style.position = "absolute";
+            afterElem.style.backgroundColor = "white";
+            afterElem.style.borderRadius = "50%";
+            afterElem.style.width = `${width * 0.4}px`;
+            afterElem.style.height = `${width * 0.4}px`;
+            afterElem.style.top = "-15%";
+            afterElem.style.right = "25%";
+
+            cloud.appendChild(beforeElem);
+            cloud.appendChild(afterElem);
+
+            bgElements.appendChild(cloud);
+          }
+        }
+
+        // Create balloons decoration
+        function createBalloons() {
+          const balloonColors = [
+            "#ff96ca",
+            "#96caff",
+            "#caff96",
+            "#ffca96",
+            "#ca96ff",
+          ];
+
+          for (let i = 0; i < 5; i++) {
+            const balloon = document.createElement("div");
+            balloon.classList.add("balloon");
+
+            const color = balloonColors[i % balloonColors.length];
+            const size = Math.random() * 10 + 35;
+
+            balloon.style.backgroundColor = color;
+            balloon.style.width = `${size}px`;
+            balloon.style.height = `${size * 1.2}px`;
+
+            // Position balloons around the card
+            const angle = (i / 5) * 2 * Math.PI;
+            const radius = 280;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+
+            balloon.style.top = `calc(50% + ${y}px)`;
+            balloon.style.left = `calc(50% + ${x}px)`;
+            balloon.style.animationDelay = `${i * 0.5}s`;
+
+            // Add balloon string
+            const string = document.createElement("div");
+            string.style.position = "absolute";
+            string.style.width = "2px";
+            string.style.height = "80px";
+            string.style.backgroundColor = "#ccc";
+            string.style.bottom = "-75px";
+            string.style.left = "50%";
+            string.style.transform = "translateX(-50%)";
+            string.style.zIndex = "-1";
+
+            balloon.appendChild(string);
+            balloon.style.zIndex = "1";
+
+            document.body.appendChild(balloon);
+          }
+        }
+
+        // Create confetti element
+        function createConfetti() {
+          const confetti = document.createElement("div");
+          const colors = [
+            "#ff96ca",
+            "#96caff",
+            "#caff96",
+            "#ffca96",
+            "#ca96ff",
+          ];
+          const shapes = ["circle", "square"];
+
+          confetti.style.position = "absolute";
+
+          // Random properties
+          const shape = shapes[Math.floor(Math.random() * shapes.length)];
+          const size = Math.random() * 10 + 5;
+          const color = colors[Math.floor(Math.random() * colors.length)];
+
+          confetti.style.width = `${size}px`;
+          confetti.style.height = `${size}px`;
+          confetti.style.backgroundColor = color;
+          confetti.style.borderRadius = shape === "circle" ? "50%" : "0";
+          confetti.style.left = `${Math.random() * 100}%`;
+          confetti.style.top = "-20px";
+
+          // Animation
+          const duration = Math.random() * 3 + 2;
+          const rotation = Math.random() * 360;
+
+          confetti.style.animation = `${duration}s linear 0s 1 normal forwards running float`;
+          confetti.style.transform = `rotate(${rotation}deg)`;
+
+          return confetti;
+        }
+
+        // Celebration effect when countdown finishes
+        function celebrate() {
+          // Show celebration elements and button
+          celebrationEl.style.display = "block";
+          surpriseButton.style.display = "block";
+          birthdayMessage.style.display = "block";
+
+          // Hide countdown boxes
+          document.querySelector(".countdown-wrapper").style.display = "none";
+
+          // Create confetti shower
+          for (let i = 0; i < 100; i++) {
+            setTimeout(() => {
+              const confetti = createConfetti();
+              celebrationEl.appendChild(confetti);
+
+              // Remove confetti after animation
+              setTimeout(() => {
+                celebrationEl.removeChild(confetti);
+              }, 5000);
+            }, i * 50);
+          }
+        }
+
+        // Update countdown timer with animation
+        function updateCountdown() {
+          const currentTime = new Date();
+          const diff = birthdayDate - currentTime;
+
+          // Check if birthday has arrived
+          if (diff <= 0) {
+            daysEl.textContent = "00";
+            hoursEl.textContent = "00";
+            minutesEl.textContent = "00";
+            secondsEl.textContent = "00";
+
+            celebrate();
+            clearInterval(interval);
+            return;
+          }
+
+          // Calculate time units
+          const days = Math.floor(diff / 1000 / 60 / 60 / 24);
+          const hours = Math.floor(diff / 1000 / 60 / 60) % 24;
+          const minutes = Math.floor(diff / 1000 / 60) % 60;
+          const seconds = Math.floor(diff / 1000) % 60;
+
+          // Format with leading zeros
+          const formattedDays = String(days).padStart(2, "0");
+          const formattedHours = String(hours).padStart(2, "0");
+          const formattedMinutes = String(minutes).padStart(2, "0");
+          const formattedSeconds = String(seconds).padStart(2, "0");
+
+          // Store previous values for comparison
+          const prevSeconds = secondsEl.textContent;
+          const prevMinutes = minutesEl.textContent;
+          const prevHours = hoursEl.textContent;
+          const prevDays = daysEl.textContent;
+
+          // Update DOM with new values
+          daysEl.textContent = formattedDays;
+          hoursEl.textContent = formattedHours;
+          minutesEl.textContent = formattedMinutes;
+          secondsEl.textContent = formattedSeconds;
+
+          // Add animation when values change
+          if (prevSeconds !== formattedSeconds) {
+            secondsBoxEl.classList.add("pulse");
+            setTimeout(() => {
+              secondsBoxEl.classList.remove("pulse");
+            }, 600);
+          }
+
+          if (prevMinutes !== formattedMinutes) {
+            minutesBoxEl.classList.add("pulse");
+            setTimeout(() => {
+              minutesBoxEl.classList.remove("pulse");
+            }, 600);
+          }
+
+          if (prevHours !== formattedHours) {
+            hoursBoxEl.classList.add("pulse");
+            setTimeout(() => {
+              hoursBoxEl.classList.remove("pulse");
+            }, 600);
+          }
+
+          if (prevDays !== formattedDays) {
+            daysBoxEl.classList.add("pulse");
+            setTimeout(() => {
+              daysBoxEl.classList.remove("pulse");
+            }, 600);
+          }
+        }
+
+        // Handle button click - show birthday surprise
+        surpriseButton.addEventListener("click", function () {
+          birthdaySurprise.style.display = "block";
+          surpriseButton.style.display = "none";
+
+          // Scroll to the surprise section
+          birthdaySurprise.scrollIntoView({ behavior: "smooth" });
+        });
+
+        // Initialize background elements
+        createCuteBackground();
+        createBalloons();
+
+        // Initial call to set values immediately
+        updateCountdown();
+
+        // Update the countdown every second
+        const interval = setInterval(updateCountdown, 1000);
+      });
+    </script>
+  </body>
+</html>
